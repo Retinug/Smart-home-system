@@ -35,6 +35,12 @@ namespace Server
             GC.Collect();
         }
 
+        public void Send(byte message)
+        {
+            byte[] send = new byte[1];
+            send[0] = message;
+            Port.Write(send, 0, 1);
+        }
         public void Send(byte[] message)
         {
             Port.Write(message, 0, message.Length);

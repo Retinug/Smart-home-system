@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO.Ports;
+using System.Net;
+using System.Net.Sockets;
 using System.Windows.Forms;
 
 namespace Server
@@ -7,13 +9,18 @@ namespace Server
     public partial class Server_Form : Form
     {
         Serial serial;
-
         public Server_Form()
         {
             InitializeComponent();
+
+            GetIP();
+
             RefreshPorts();
 
-            Console.TextBox = text_Console;
+            Console.Run();
+            Console.TextConsole = text_Console;
+            Console.TextInput = text_Input;
+
         }
 
         #region Console
@@ -22,16 +29,7 @@ namespace Server
             if (e.KeyCode == Keys.Enter)
             {
                 e.SuppressKeyPress = true;
-
-                try
-                {
-                    serial.Send(new byte[] { Convert.ToByte(text_Input.Text) });
-                }
-                catch
-                {
-                    Console.WriteLine("Command not found");
-                }
-
+                Console.Read();
 
                 text_Input.Clear();
             }
@@ -39,6 +37,19 @@ namespace Server
 
        
         #endregion
+
+        private void GetIP()
+        {
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    labelIP.Text = $"IP:{ip.ToString()}";
+                }
+            }
+        }
 
         #region Serial control
         private void list_Port_SelectedIndexChanged(object sender, EventArgs e)
@@ -52,8 +63,9 @@ namespace Server
         private void button_Connect_Click(object sender, EventArgs e)
         {
             serial = new Serial(list_Port.SelectedItem.ToString());
+            Console.serial = serial;
 
-            serial.Port.DataReceived += port_DataReceived;
+            Console.serial.Port.DataReceived += port_DataReceived;
 
             serial.Connect();
 
