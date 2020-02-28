@@ -7,6 +7,8 @@ namespace Server
     {
         public static Serial serial;
 
+        public static Server_Form Server_Form { get; set; }
+
         public static TextBox TextConsole { get; set; }
         public static TextBox TextInput { get; set; }
 
@@ -14,14 +16,17 @@ namespace Server
 
         public static void Run()
         {
-            executor.Register("read", new ReadCommandProc());
             executor.Register("clear", new ClearCommandProc());
             executor.Register("send", new SendCommandProc());
+            executor.Register("connect", new ConnectCommandProc());
+            executor.Register("disconnect", new DisconnectCommandProc());
+
+            WriteLine("Server is up and waiting for connection...");
         }
 
         public static void Read()
         {
-            string str = TextInput.Text;
+            string str = Server_Form.text_Input.Text;
             str = System.Text.RegularExpressions.Regex.Replace(str, @"\s+", " ");
             str = str.Trim();
 
@@ -40,32 +45,40 @@ namespace Server
 
             try
             {
-                executor.RunCommand(command);
+                if (input[0] == "help") executor.HelpCommand();
+                else executor.RunCommand(command);
+            }
+            catch (BoardNotConnectedException)
+            {
+                WriteLine("Board not connected.");
+            }
+            catch (ArgsNotSetException)
+            {
+                WriteLine("Arguments not set.");
+            }
+            catch (System.IO.IOException)
+            {
+                WriteLine("COM does not exist.");
             }
             catch
             {
-                WriteLine("Command not found");
+                WriteLine("Command not found.");
             }
         }
 
         public static void Write(string message)
         {
-            TextConsole.AppendText(message);
+            Server_Form.text_Console.AppendText(message);
         }
 
         public static void WriteLine(string message)
         {
-            TextConsole.AppendText(message + Environment.NewLine);
-        }
-
-        public static void Send(string port)
-        {
-            
+            Server_Form.text_Console.AppendText(message + Environment.NewLine);
         }
 
         public static void Clear()
         {
-            TextConsole.Clear();
+            Server_Form.text_Console.Clear();
         }
     }
 }

@@ -10,6 +10,16 @@ namespace Server
     class Serial
     {
         public SerialPort Port;
+
+        public bool isConnect
+        {
+            get
+            {
+                if (Port != null) return true;
+                else return false;
+            }
+        }
+
         
         public Serial(string portname)
         {

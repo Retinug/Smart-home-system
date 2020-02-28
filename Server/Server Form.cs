@@ -8,7 +8,6 @@ namespace Server
 {
     public partial class Server_Form : Form
     {
-        Serial serial;
         public Server_Form()
         {
             InitializeComponent();
@@ -17,9 +16,9 @@ namespace Server
 
             RefreshPorts();
 
+            Console.Server_Form = this;
+
             Console.Run();
-            Console.TextConsole = text_Console;
-            Console.TextInput = text_Input;
 
         }
 
@@ -54,29 +53,16 @@ namespace Server
         #region Serial control
         private void list_Port_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (list_Port.SelectedIndex != -1 && serial == null)
+            if (list_Port.SelectedIndex != -1 && Console.serial == null)
             {
                 button_Connect.Enabled = true;
             }
         }
 
-        private void button_Connect_Click(object sender, EventArgs e)
-        {
-            serial = new Serial(list_Port.SelectedItem.ToString());
-            Console.serial = serial;
-
-            Console.serial.Port.DataReceived += port_DataReceived;
-
-            serial.Connect();
-
-            button_Connect.Enabled = false;
-            button_Disconnect.Enabled = true;
-        }
-
         private void port_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
 
-            byte[] data = serial.Read();
+            byte[] data = Console.serial.Read();
 
             Invoke((MethodInvoker)delegate {
                 for (int i = 0; i < data.Length; i++)
@@ -84,16 +70,36 @@ namespace Server
                     Console.WriteLine(data[i].ToString());
                 }
             });
+
+        }
+
+        private void button_Connect_Click(object sender, EventArgs e)
+        {
+            Console.serial = new Serial(list_Port.SelectedItem.ToString());
+
+            Console.WriteLine($"Connected {Console.serial.Port.PortName} port.");
+
+            Console.serial.Port.DataReceived += port_DataReceived;
+
+            Console.serial.Connect();
+
+            button_Connect.Enabled = false;
+            button_Disconnect.Enabled = true;
+
             
         }
 
         private void button_Disconnect_Click(object sender, EventArgs e)
         {
-            serial.Disconnect();
-            serial = null;
+            Console.WriteLine($"Disconnected {Console.serial.Port.PortName} port.");
+
+            Console.serial.Disconnect();
+            Console.serial = null;
 
             button_Connect.Enabled = true;
             button_Disconnect.Enabled = false;
+
+            
         }
 
         private void button_Refresh_Click(object sender, EventArgs e)
