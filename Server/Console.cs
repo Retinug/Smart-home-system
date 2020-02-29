@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace Server
@@ -8,6 +9,8 @@ namespace Server
         public static Serial serial;
 
         public static Server_Form Server_Form { get; set; }
+
+        public static List<TcpConnect> tcpConnects = new List<TcpConnect>();
 
         static CommandExecutor executor = new CommandExecutor();
 
