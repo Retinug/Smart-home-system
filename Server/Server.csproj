@@ -63,7 +63,6 @@
   <ItemGroup>
     <Compile Include="Command.cs" />
     <Compile Include="Console.cs" />
-    <Compile Include="DataPacket.cs" />
     <Compile Include="Server Form.cs">
       <SubType>Form</SubType>
     </Compile>

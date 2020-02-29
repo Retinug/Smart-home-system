@@ -85,8 +85,6 @@ namespace Server
 
             button_Connect.Enabled = false;
             button_Disconnect.Enabled = true;
-
-            
         }
 
         private void button_Disconnect_Click(object sender, EventArgs e)
@@ -98,8 +96,6 @@ namespace Server
 
             button_Connect.Enabled = true;
             button_Disconnect.Enabled = false;
-
-            
         }
 
         private void button_Refresh_Click(object sender, EventArgs e)

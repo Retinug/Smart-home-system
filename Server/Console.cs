@@ -9,9 +9,6 @@ namespace Server
 
         public static Server_Form Server_Form { get; set; }
 
-        public static TextBox TextConsole { get; set; }
-        public static TextBox TextInput { get; set; }
-
         static CommandExecutor executor = new CommandExecutor();
 
         public static void Run()
@@ -20,6 +17,7 @@ namespace Server
             executor.Register("send", new SendCommandProc());
             executor.Register("connect", new ConnectCommandProc());
             executor.Register("disconnect", new DisconnectCommandProc());
+            executor.Register("refresh", new RefreshCommandProc());
 
             WriteLine("Server is up and waiting for connection...");
         }

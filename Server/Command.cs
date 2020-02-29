@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Server
 {
@@ -121,7 +118,9 @@ namespace Server
         public void RunCommand(ICommand command)
         {
             CommandArg commandArg = command as CommandArg;
+            if (commandArg == null || !commandArg.Arg.Contains("COM")) throw new ArgsNotSetException();
             if (commandArg == null) throw new ArgsNotSetException();
+
             Console.serial = new Serial(commandArg.Arg);
             
             Console.serial.Connect();
@@ -156,6 +155,27 @@ namespace Server
         public void HelpCommand()
         {
             Console.WriteLine("disconnect - board disconnect.");
+        }
+    }
+
+    public class RefreshCommandProc : ICommandProcessor
+    {
+        public void RunCommand(ICommand command)
+        {
+            Console.Server_Form.list_Port.Items.Clear();
+            Console.Server_Form.list_Port.SelectedIndex = -1;
+            Console.Server_Form.button_Connect.Enabled = false;
+
+            string[] ports = Serial.GetPorts();
+            foreach (var port in ports)
+            {
+                Console.Server_Form.list_Port.Items.Add(port);
+            }
+        }
+
+        public void HelpCommand()
+        {
+            Console.WriteLine("refresh - refresh conenction list.");
         }
     }
 
