@@ -11,6 +11,7 @@ namespace Server
         public static Server_Form Server_Form { get; set; }
 
         public static List<TcpConnect> tcpConnects = new List<TcpConnect>();
+        public static TcpConnect tcpConnect = new TcpConnect();
 
         static CommandExecutor executor = new CommandExecutor();
 
@@ -23,6 +24,8 @@ namespace Server
             executor.Register("refresh", new RefreshCommandProc());
 
             WriteLine("Server is up and waiting for connection...");
+
+            tcpConnect.RunServer();
         }
 
         public static void Read()

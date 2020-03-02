@@ -61,6 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Client.cs" />
     <Compile Include="Command.cs" />
     <Compile Include="Console.cs" />
     <Compile Include="Server Form.cs">

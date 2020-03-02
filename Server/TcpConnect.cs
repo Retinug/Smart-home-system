@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 
 namespace Server
 {
@@ -8,34 +9,33 @@ namespace Server
         IPAddress address;
         int port;
 
-        TcpListener tcpListener;
-        TcpClient tcpClient;
-
-        byte[] data;
-
-        public TcpConnect(IPAddress address, int port)
+        public async void RunServer()
         {
-            this.address = address;
-            this.port = port;
-            tcpListener = new TcpListener(address, port);
+            var tcpListener = TcpListener.Create(8888);
+            Console.WriteLine(tcpListener.ToString());
             tcpListener.Start();
+            while (true)
+            {
+                var tcpClient = await tcpListener.AcceptTcpClientAsync();
+                Console.WriteLine("Client is connect.");
+                try
+                {
+                    await processClientTearOff(tcpClient);
+                }
+                catch (System.Exception)
+                {
+                    Console.WriteLine("Client is disconnect.");
+                }
+                
+                
+            }
         }
-
-        public void Connect()
+        async Task processClientTearOff(TcpClient client)
         {
-            tcpClient = tcpListener.AcceptTcpClient();
-        }
-
-        public void Disconnect()
-        {
-            tcpClient.Close();
-            tcpListener.Stop();
-        }
-
-        public void Send(byte[] data)
-        {
-            NetworkStream stream = tcpClient.GetStream();
-            stream.Write(data, 0, data.Length);
+            //using (var client = new Client(client))
+            //    await client.ProcessAsync();
+            var clientTCP = new Client(client);
+            await clientTCP.ProcessAsync();
         }
     }
 }
