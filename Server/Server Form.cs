@@ -112,10 +112,6 @@ namespace Server
             {
                 list_Port.Items.Add(port);
             }
-            if (ports.Length == 0)
-            {
-                MessageBox.Show("No available ports!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
         }
 
         #endregion

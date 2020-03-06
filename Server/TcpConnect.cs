@@ -8,8 +8,6 @@ namespace Server
 {
 	class TcpConnect
 	{
-		public List<TcpClient> tcpClients = new List<TcpClient>();
-
 		TcpListener tcpListener;
 
 		ushort port;
@@ -26,8 +24,6 @@ namespace Server
 			while (true)
 			{
 				TcpClient tcpClient = await tcpListener.AcceptTcpClientAsync();
-
-				tcpClients.Add(tcpClient);
 				Console.WriteLine("Client is connect.");
 				try
 				{
@@ -40,13 +36,49 @@ namespace Server
 			}
 		}
 
+		public async Task Run()
+		{
+			tcpListener = TcpListener.Create(port);
+			tcpListener.Start();
+			Console.WriteLine("Server is started.");
+
+			await Task.Run(async () =>
+			{
+				while (true)
+				{
+					TcpClient tcpClient = await tcpListener.AcceptTcpClientAsync();
+					NewTcpConnectAsync(tcpClient);
+				}
+					
+			});
+		}
+
+		void NewTcpConnectAsync(TcpClient client)
+		{
+			Task taskClient = new Task(async () =>
+			{
+				while (true)
+				{
+					try
+					{
+						Console.WriteLine("Client is connect.");
+
+						await processClient(client);
+					}
+					catch
+					{
+						Console.WriteLine("Client is disconnect.");
+						break;
+					}
+				}
+			});
+			taskClient.Start();
+		}
+
 		async Task processClient(TcpClient client)
 		{
 			var clientTCP = new Client(client);
 			await clientTCP.ProcessAsync();
 		}
-
-
-
 	}
 }
