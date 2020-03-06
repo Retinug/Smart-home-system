@@ -8,6 +8,7 @@ namespace Server
 {
     public partial class Server_Form : Form
     {
+        public delegate void SafeCallDelegate(string text);
         public Server_Form()
         {
             InitializeComponent();
@@ -19,7 +20,6 @@ namespace Server
             Console.Server_Form = this;
 
             Console.Run();
-
         }
 
         #region Console
@@ -34,7 +34,6 @@ namespace Server
             }
         }
 
-       
         #endregion
 
         private void GetIP()
@@ -63,7 +62,7 @@ namespace Server
         {
 
             byte[] data = Console.serial.Read();
-
+            //Console.tcpConnect.tcpClient.
             Invoke((MethodInvoker)delegate {
                 for (int i = 0; i < data.Length; i++)
                 {

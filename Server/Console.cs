@@ -10,8 +10,7 @@ namespace Server
 
         public static Server_Form Server_Form { get; set; }
 
-        public static List<TcpConnect> tcpConnects = new List<TcpConnect>();
-        public static TcpConnect tcpConnect = new TcpConnect();
+        public static TcpConnect tcpConnect = new TcpConnect(8888);
 
         static CommandExecutor executor = new CommandExecutor();
 
@@ -22,10 +21,11 @@ namespace Server
             executor.Register("connect", new ConnectCommandProc());
             executor.Register("disconnect", new DisconnectCommandProc());
             executor.Register("refresh", new RefreshCommandProc());
+            //executor.Register("tcpsend", new TCPCommandProc());
 
             WriteLine("Server is up and waiting for connection...");
-
-            tcpConnect.RunServer();
+            tcpConnect = new TcpConnect(8888);
+            tcpConnect.RunAsync();
         }
 
         public static void Read()
@@ -34,7 +34,13 @@ namespace Server
             str = System.Text.RegularExpressions.Regex.Replace(str, @"\s+", " ");
             str = str.Trim();
 
-            string[] input = str.Split(' ');
+            //string[] input = str.Split(' ');
+            string[] input = new string[2];
+            int spaceIndex = str.Length - str.IndexOf(' ');
+            input[0] = str.Substring(0, spaceIndex);
+            str = str.Remove(0, spaceIndex);
+            input[1] = str; //str.Substring(str.IndexOf(' '), str.Length - 1);
+
 
             Command command;
 
@@ -77,7 +83,17 @@ namespace Server
 
         public static void WriteLine(string message)
         {
-            Server_Form.text_Console.AppendText(message + Environment.NewLine);
+            //Server_Form.text_Console.Invoke()
+            if (Server_Form.text_Console.InvokeRequired)
+            {
+                var d = new Server_Form.SafeCallDelegate(WriteLine);
+                Server_Form.Invoke(d, new object[] { message + Environment.NewLine });
+            }
+            else
+            {
+                Server_Form.text_Console.AppendText(message + Environment.NewLine);
+            }
+            
         }
 
         public static void Clear()

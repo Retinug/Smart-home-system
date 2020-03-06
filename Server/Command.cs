@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Sockets;
 
 namespace Server
 {
@@ -178,6 +179,29 @@ namespace Server
             Console.WriteLine("refresh - refresh conenction list.");
         }
     }
+
+    //public class TCPCommandProc : ICommandProcessor
+    //{
+    //    public void RunCommand(ICommand command)
+    //    {
+    //        CommandArg commandArg = command as CommandArg;
+    //        string[] dataStr = commandArg.Arg.Split(' ');
+    //        byte[] data = new byte[5];
+    //        for (int i = 0; i < data.Length; i++)
+    //        {
+    //            data[i] = byte.Parse(commandArg.Arg);
+    //        }
+
+    //        NetworkStream stream = Console.tcpConnect.tcpClient.GetStream();
+
+    //        stream.Write(data, 0, data.Length);
+    //    }
+
+    //    public void HelpCommand()
+    //    {
+    //        Console.WriteLine("tcpsend - send data to tcp client.");
+    //    }
+    //}
 
     #endregion
 }

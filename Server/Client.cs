@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Server
@@ -30,26 +31,26 @@ namespace Server
             return buf;
         }
 
-        //async Task<byte[]> ReadFromStreamAsync()
-        //{
-        //    return 
-        //}
-
         public async Task ProcessAsync()
         {
-            while (true)
+            while (stream != null)
             {
                 byte[] actionBuffer = await ReadFromStreamAsync(5);
-
-                Console.WriteLine(Encoding.ASCII.GetString(actionBuffer));
+                Console.WriteLine($"Received data {Encoding.ASCII.GetString(actionBuffer)}");
             }
-            
-            //var action = (Action)BitConverter.ToInt16(actionBuffer, 0);
+        }
 
-            //switch (action)
-            //{
-            //    // логика в зависимости от кода команды
-            //}
+        public async Task WriteAsync()
+        {
+            byte[] data = new byte[1];
+
+            if (stream.DataAvailable)
+            {
+                await stream.WriteAsync(data, 0, data.Length);
+                Console.WriteLine(data.ToString());
+            }
+
+            Console.WriteLine(data.ToString());
         }
     }
 }
