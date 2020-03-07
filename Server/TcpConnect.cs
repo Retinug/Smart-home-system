@@ -11,32 +11,17 @@ namespace Server
 		TcpListener tcpListener;
 
 		ushort port;
+
+		public delegate void DataAcceptHandler(byte[] data);
+
+		public DataAcceptHandler AcceptData;
+
 		public TcpConnect(ushort port)
 		{
 			this.port = port;
 		}
 
 		public async Task RunAsync()
-		{
-			tcpListener = TcpListener.Create(port);
-			tcpListener.Start();
-			Console.WriteLine("Server is started.");
-			while (true)
-			{
-				TcpClient tcpClient = await tcpListener.AcceptTcpClientAsync();
-				Console.WriteLine("Client is connect.");
-				try
-				{
-					await processClient(tcpClient);
-				}
-				catch
-				{
-					Console.WriteLine("Client is disconnect.");
-				}
-			}
-		}
-
-		public async Task Run()
 		{
 			tcpListener = TcpListener.Create(port);
 			tcpListener.Start();
@@ -49,20 +34,19 @@ namespace Server
 					TcpClient tcpClient = await tcpListener.AcceptTcpClientAsync();
 					NewTcpConnectAsync(tcpClient);
 				}
-					
 			});
 		}
 
 		void NewTcpConnectAsync(TcpClient client)
 		{
-			Task taskClient = new Task(async () =>
+			Task taskClient;
+			taskClient = new Task(async () =>
 			{
 				while (true)
 				{
 					try
 					{
 						Console.WriteLine("Client is connect.");
-
 						await processClient(client);
 					}
 					catch
@@ -72,12 +56,16 @@ namespace Server
 					}
 				}
 			});
+
 			taskClient.Start();
+
 		}
 
 		async Task processClient(TcpClient client)
 		{
-			var clientTCP = new Client(client);
+			Client clientTCP = new Client(client);
+
+			AcceptData += clientTCP.WriteStream;
 			await clientTCP.ProcessAsync();
 		}
 	}

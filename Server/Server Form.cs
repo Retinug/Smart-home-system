@@ -58,18 +58,15 @@ namespace Server
             }
         }
 
-        private void port_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        public void port_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-
             byte[] data = Console.serial.Read();
-            //Console.tcpConnect.tcpClient.
-            Invoke((MethodInvoker)delegate {
-                for (int i = 0; i < data.Length; i++)
-                {
-                    Console.WriteLine(data[i].ToString());
-                }
-            });
-
+            Console.Write("Serial receive: ");
+            for (int i = 0; i < data.Length; i++)
+            {
+                Console.Write($"{data[i].ToString()} ");
+            }
+            Console.WriteLine();
         }
 
         private void button_Connect_Click(object sender, EventArgs e)
@@ -91,6 +88,7 @@ namespace Server
             Console.WriteLine($"Disconnected {Console.serial.Port.PortName} port.");
 
             Console.serial.Disconnect();
+            Console.serial.Port.Dispose();
             Console.serial = null;
 
             button_Connect.Enabled = true;
