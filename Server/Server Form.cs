@@ -61,12 +61,12 @@ namespace Server
         public void port_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
             byte[] data = Console.serial.Read();
-            Console.Write("Serial receive: ");
-            for (int i = 0; i < data.Length; i++)
-            {
-                Console.Write($"{data[i].ToString()} ");
-            }
-            Console.WriteLine();
+            //Console.Write("Serial receive: ");
+            //for (int i = 0; i < data.Length; i++)
+            //{
+            //    Console.Write($"{data[i].ToString()} ");
+            //}
+            //Console.WriteLine();
         }
 
         private void button_Connect_Click(object sender, EventArgs e)

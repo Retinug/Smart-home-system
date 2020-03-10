@@ -26,7 +26,7 @@ namespace Server
 		{
 			byte[] data = new byte[count];
 			await stream.ReadAsync(data, 0, data.Length);
-			Console.WriteLine($"Received data {Encoding.ASCII.GetString(data)}.");
+			//Console.WriteLine($"Received data {Encoding.ASCII.GetString(data)}.");
 			Console.serial.Send(data[0]);
 		}
 
